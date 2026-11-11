@@ -6,7 +6,7 @@
 #   domain to it. Steel itself honors PORT (verified in
 #   steel-dev/steel-browser api/src/index.ts: `process.env.PORT ?
 #   parseInt(...) : 3000`), but the nginx gateway must own the public
-#   port, so Steel is moved to an internal port (12731 — chosen to
+#   port, so Steel is moved to an internal port (12732 — chosen to
 #   never collide with Railway's injected value) and the gateway
 #   listens on Railway's PORT. Capture the public port FIRST, before
 #   remapping PORT for Steel.
@@ -61,8 +61,8 @@ case "$KEY" in
     ;;
 esac
 
-# Steel listens internally on 12731; the gateway owns Railway's PORT.
-export PORT=12731
+# Steel listens internally on 12732; the gateway owns Railway's PORT.
+export PORT=12732
 
 # PUBLIC URL: derive at boot from the live RAILWAY_PUBLIC_DOMAIN.
 # Only set it when a real domain is present.
@@ -87,5 +87,5 @@ fs.writeFileSync("/app/api/nginx.conf", s);
 
 nginx -t -c /app/api/nginx.conf || { echo "Steel: FATAL gateway nginx config failed validation; refusing to start." >&2; exit 1; }
 
-echo "Steel: gateway on :${PUBLIC_PORT}, Steel API on :12731 (internal), logs in /data/logs"
+echo "Steel: gateway on :${PUBLIC_PORT}, Steel API on :12732 (internal), logs in /data/logs"
 exec /app/api/entrypoint.sh "$@"
