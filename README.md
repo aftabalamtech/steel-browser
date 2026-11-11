@@ -14,12 +14,12 @@ Steel Browser is the open-source browser API for AI agents and apps: a batteries
 
 ## Deploy and Host
 
-One-click deploy creates a single Steel Browser service with a persistent volume for browser logs. After deploy, open the public URL: `/login` takes the generated `STEEL_API_KEY` once and unlocks the browser UI (`/ui`) in that browser; API clients send the same key as an `Authorization: Bearer`, `x-api-key`, or `?apiKey=` credential. `GET /v1/health` stays open so the platform health check works without a key.
+One-click deploy creates a single Steel Browser service with a persistent volume for browser logs. After deploy, open the public URL: `/login` validates the generated `STEEL_API_KEY` against the POST-only session creation endpoint, then stores it as a cookie and unlocks the browser UI (`/ui`) in that browser; API clients send the same key as an `Authorization: Bearer`, `x-api-key`, or `?apiKey=` credential. `GET /v1/health` stays open so the platform health check works without a key.
 
 ## Why Deploy
 
 - **Private by default:** upstream Steel ships no authentication of any kind — the official Railway template leaves the browser API open to anyone who finds the URL. This wrapper puts an nginx gateway in front of every route, so your Chromium, your sessions, and your IP are yours alone. The key is generated per deploy; rotate it in the Railway variables panel.
-- **The UI actually works locked:** a header-only gateway would lock the built-in session viewer out of its own API. The `/login` page stores the key as a cookie, so the live session viewer, the Swagger docs at `/documentation`, and the DevTools debugger at `/devtools/` all work in the browser after one login.
+- **The UI actually works locked:** a header-only gateway would lock the built-in session viewer out of its own API. The `/login` page validates the key using POST (not GET) and stores it as a cookie, so the live session viewer, session-cast WebSockets, the Swagger docs at `/documentation`, and the DevTools debugger at `/devtools/` all work in the browser after one login.
 - **Correct URLs out of the box:** the wrapper derives the public domain and TLS setting at boot, so the `websocketUrl` and debugger URLs Steel hands back are reachable `wss://` URLs — not `ws://localhost:...`.
 - **Pinned and reproducible:** the image is pinned by manifest digest, not `:latest`, so a redeploy never silently pulls a new upstream build.
 - **Logs persist:** Steel's DuckDB session logs live on a Railway volume at `/data/logs`, so they survive restarts.
