@@ -43,9 +43,32 @@
     e.preventDefault();
     const key = input.value.trim();
     if (!key) return;
-    // Validate the key against a real endpoint before storing it.
-    const res = await fetch('/v1/sessions', { headers: { 'x-api-key': key } });
-    if (!res.ok) { err.hidden = false; return; }
+    // Validate via POST: the Steel create-session route is POST-only.
+    // GET /v1/sessions may return 404/405 even for a valid key.
+    let res;
+    try {
+      res = await fetch('/v1/sessions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': key },
+        body: JSON.stringify({})
+      });
+    } catch (_) {
+      err.textContent = 'Could not reach the Steel API. Check the service and try again.';
+      err.hidden = false;
+      return;
+    }
+    // 400/422 indicates that authentication passed but the empty payload
+    // failed validation. Only authentication failures reject the key.
+    if (res.status === 401 || res.status === 403) {
+      err.textContent = 'That key was rejected. Check the value in the Railway variables panel and try again.';
+      err.hidden = false;
+      return;
+    }
+    if (res.status >= 500) {
+      err.textContent = 'Steel API is unavailable. Check deployment logs and try again.';
+      err.hidden = false;
+      return;
+    }
     const secure = location.protocol === 'https:' ? '; Secure' : '';
     document.cookie = 'steel_api_key=' + encodeURIComponent(key) +
       '; path=/; max-age=31536000; SameSite=Lax' + secure;
