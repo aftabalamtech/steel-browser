@@ -115,7 +115,7 @@ http {
 
         # Platform health check stays open (Railway sends no key).
         location = /v1/health {
-            proxy_pass http://127.0.0.1:12731;
+            proxy_pass http://127.0.0.1:12732;
             proxy_http_version 1.1;
             proxy_set_header Host $host;
         }
@@ -135,7 +135,7 @@ http {
             if ($authed = 0) {
                 return 401;
             }
-            proxy_pass http://127.0.0.1:12731;
+            proxy_pass http://127.0.0.1:12732;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
@@ -200,7 +200,7 @@ http {
             if ($authed = 0) {
                 return 401 '<!DOCTYPE html><html><head><title>Steel Browser — locked</title></head><body><h1>Steel Browser is API-key locked</h1><p>Send your key as an <code>Authorization: Bearer</code>, <code>x-api-key</code>, or <code>?apiKey=</code> credential, or <a href="/login">log in with the key</a> to use the browser UI.</p></body></html>';
             }
-            proxy_pass http://127.0.0.1:12731;
+            proxy_pass http://127.0.0.1:12732;
             proxy_http_version 1.1;
             proxy_set_header Upgrade $http_upgrade;
             proxy_set_header Connection $connection_upgrade;
