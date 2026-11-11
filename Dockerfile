@@ -22,7 +22,7 @@
 #   gateway config at boot and refuses to start without a key.
 # - PORT: Steel honors Railway's PORT (api/src/index.ts), but the
 #   gateway must own the public port, so entrypoint.sh moves Steel
-#   to internal port 12731 and the gateway listens on Railway's
+#   to internal port 12732 and the gateway listens on Railway's
 #   PORT. Never set a startCommand: the image ENTRYPOINT is tini +
 #   the upstream entrypoint script, which execs node directly.
 # - USER root: the published image config carries no USER directive
@@ -76,7 +76,7 @@ RUN chmod +x /app/entrypoint.sh
 
 # Baked constants (see header): persistent browser logs on the
 # volume. The HTTP port is split by the entrypoint on every boot
-# (Steel internal 12731, gateway on Railway's PORT).
+# (Steel internal 12732, gateway on Railway's PORT).
 ENV LOG_STORAGE_ENABLED=true \
     LOG_STORAGE_PATH=/data/logs/browser-logs.duckdb
 
