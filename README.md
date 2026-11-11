@@ -43,7 +43,7 @@ Only `STEEL_API_KEY` is on the deploy form (generated). Everything else is baked
 | `USE_SSL` | `true` when a public domain exists | Makes Steel return `https://` / `wss://` URLs. Railway terminates TLS at the edge, so the container only ever sees plain HTTP. |
 | `LOG_STORAGE_ENABLED` | `true` | Enables Steel's DuckDB session-log storage. Baked into the image. |
 | `LOG_STORAGE_PATH` | `/data/logs/browser-logs.duckdb` | Session logs on the volume. Baked into the image. |
-| `PORT` | (split at boot) | Railway's injected port is owned by the nginx gateway; Steel listens internally on 12731. |
+| `PORT` | (split at boot) | Railway's injected port is owned by the nginx gateway; Steel listens internally on 12732. |
 | `PROXY_URL` | — | (Upstream, optional) Proxy Steel routes browser traffic through, e.g. `user:pass@host:port`. |
 | `DEFAULT_HEADERS` | `{}` | (Upstream, optional) JSON object of headers added to every browser request. |
 | `CHROME_EXECUTABLE_PATH` | `/usr/bin/chromium` | (Upstream, optional) Custom Chrome/Chromium binary path. |
