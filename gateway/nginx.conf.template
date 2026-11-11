@@ -126,6 +126,29 @@ http {
             default_type text/html;
         }
 
+        # Steel's session viewer opens /sessions/{id}/cast (and websocket
+        # upgrades below /v1/sessions/{id}/...) through the same origin.
+        # The generic authenticated proxy below already forwards Upgrade,
+        # but use an explicit location so the path is preserved exactly and
+        # websocket timeout/buffering rules are guaranteed for cast streams.
+        location ^~ /v1/sessions/ {
+            if ($authed = 0) {
+                return 401;
+            }
+            proxy_pass http://127.0.0.1:12731;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection $connection_upgrade;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            proxy_read_timeout 86400;
+            proxy_send_timeout 86400;
+            proxy_buffering off;
+            proxy_request_buffering off;
+        }
+
         # DevTools debugger through the gateway (auth-gated). Host must
         # be 127.0.0.1, not the public domain: Chrome's DevTools HTTP
         # endpoint rejects requests whose Host is neither localhost nor
